@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Cliente</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cadastrar Cliente</h1>
+
+    <form id="clienteForm">
+        <label for="razao_social">Razão Social:</label>
+        <input type="text" id="razao_social" name="razao_social" required>
+
+        <label for="cnpj">CNPJ:</label>
+        <input type="text" id="cnpj" name="cnpj" required>
+
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required>
+
+        <label for="endereco">Endereço:</label>
+        <input type="text" id="endereco" name="endereco" required>
+
+        <label for="uf">UF:</label>
+        <input type="text" id="uf" name="uf" required>
+
+        <label for="status">Status:</label>
+        <input type="text" id="status" name="status" required>
+
+        <label for="contato">Contato:</label>
+        <input type="text" id="contato" name="contato" required>
+
+        <button type="submit">Cadastrar</button>
+        <button type="button" onclick="goBack()">Voltar</button>
+    </form>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        document.getElementById('clienteForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const cliente = {
+                razao_social: document.getElementById('razao_social').value,
+                cnpj: document.getElementById('cnpj').value,
+                nome: document.getElementById('nome').value,
+                endereco: document.getElementById('endereco').value,
+                uf: document.getElementById('uf').value,
+                status: document.getElementById('status').value,
+                contato: document.getElementById('contato').value,
+            };
+
+            ipcRenderer.invoke('inserirCliente', cliente).then(() => {
+                alert('Cliente cadastrado com sucesso!');
+                goBack();
+            }).catch(err => {
+                console.error('Erro ao cadastrar cliente:', err);
+                alert('Erro ao cadastrar cliente.');
+            });
+        });
+
+        function goBack() {
+            ipcRenderer.send('navigate', 'cliente.html'); // Navega de volta para a página de cliente
+        }
+    </script>
+</body>
+</html>

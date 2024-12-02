@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Logística</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            font-size: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cadastrar Logística</h1>
+
+    <form id="logisticaForm">
+        <label for="codigo_entrega">Código de Entrega:</label>
+        <input type="text" id="codigo_entrega" name="codigo_entrega" required>
+
+        <label for="codigo_pedido">Código de Pedido:</label>
+        <input type="text" id="codigo_pedido" name="codigo_pedido" required>
+
+        <label for="cliente">Cliente:</label>
+        <input type="text" id="cliente" name="cliente" required>
+
+        <label for="cep_entrega">CEP de Entrega:</label>
+        <input type="text" id="cep_entrega" name="cep_entrega" required>
+
+        <label for="placa_veiculo">Placa do Veículo:</label>
+        <input type="text" id="placa_veiculo" name="placa_veiculo" required>
+
+        <label for="data_pedido">Data de Pedido:</label>
+        <input type="date" id="data_pedido" name="data_pedido" required>
+
+        <label for="data_entrega">Data de Entrega:</label>
+        <input type="date" id="data_entrega" name="data_entrega" required>
+
+        <button type="submit">Cadastrar</button>
+        <button type="button" onclick="goBack()">Voltar</button>
+    </form>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        document.getElementById('logisticaForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const logistica = {
+                codigo_entrega: document.getElementById('codigo_entrega').value,
+                codigo_pedido: document.getElementById('codigo_pedido').value,
+                cliente: document.getElementById('cliente').value,
+                cep_entrega: document.getElementById('cep_entrega').value,
+                placa_veiculo: document.getElementById('placa_veiculo').value,
+                data_pedido: document.getElementById('data_pedido').value,
+                data_entrega: document.getElementById('data_entrega').value,
+            };
+
+            ipcRenderer.invoke('inserirLogistica', logistica).then(() => {
+                alert('Logística cadastrada com sucesso!');
+                goBack();
+            }).catch(err => {
+                console.error('Erro ao cadastrar logística:', err);
+                alert('Erro ao cadastrar logística.');
+            });
+        });
+
+        function goBack() {
+            ipcRenderer.send('navigate', 'logistica.html'); // Navega de volta para a página de logística
+        }
+    </script>
+</body>
+</html>
